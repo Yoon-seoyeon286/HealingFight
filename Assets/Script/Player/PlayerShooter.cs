@@ -5,6 +5,7 @@ public class PlayerShooter : MonoBehaviour
 {
     public Transform gunPivot;
     public Transform rightHandMount;
+    public Transform leftHandMount;
     public GameObject gun;
 
     PlayerInput playerInput;
@@ -26,13 +27,22 @@ public class PlayerShooter : MonoBehaviour
 
     void OnAnimatorIK(int layerIndex)
     {
-        gunPivot.position = animator.GetIKHintPosition(AvatarIKHint.RightElbow);
+
+        animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1f);
+        animator.SetIKRotationWeight(AvatarIKGoal.LeftHand, 1f);
+
+        animator.SetIKPosition(AvatarIKGoal.LeftHand, leftHandMount.position);
+        animator.SetIKRotation(AvatarIKGoal.LeftHand, leftHandMount.rotation);
+
 
         animator.SetIKPositionWeight(AvatarIKGoal.RightHand, 1f);
         animator.SetIKRotationWeight(AvatarIKGoal.RightHand, 1f);
 
         animator.SetIKPosition(AvatarIKGoal.RightHand, rightHandMount.position);
         animator.SetIKRotation(AvatarIKGoal.RightHand, rightHandMount.rotation);
+
+        gunPivot.position = animator.GetIKPosition(AvatarIKGoal.LeftHand);
+        gunPivot.rotation = animator.GetIKRotation(AvatarIKGoal.LeftHand);
 
     }
 }
