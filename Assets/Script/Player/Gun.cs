@@ -10,7 +10,7 @@ public class Gun : MonoBehaviour
         Reloading
     }
 
-    public State state {  get; private set; }
+    public State state { get; private set; }
     public Transform fireTransform;
 
     public ParticleSystem muzzleFlashEffect; //총구 화염 효과
@@ -62,14 +62,46 @@ public class Gun : MonoBehaviour
 
     }
 
-    void Start()
+    public void Fire()
     {
-        
+        if (state == State.Ready && Time.time >= lastFireTime + gunData.timeBetFire)
+        {
+            lastFireTime = Time.time;
+            Shot();
+        }
     }
 
-    
-    void Update()
+    void Shot()
     {
-        
+        RaycastHit hit;
+        Vector3 hitPosition = Vector3.zero;
+
+        //레이캐스트(시작 지점, 방향, 충돌 정보 컨테이너, 사정거리)
+        if (Physics.Raycast(fireTransform.position, fireTransform.forward, out hit, fireDistance))
+        {
+            IDamageable target = hit.collider.GetComponent<IDamageable>();
+
+            if (target != null)
+            {
+                target.onDamage(gunData.damage, hit.point, hit.normal);
+            }
+
+            //레이 충돌 위치 저장
+            hitPosition = hit.point;
+        }
+
+        else
+        {
+            //탄알이 최대 사정거리까지 날아갔을 때의 위치를 충돌 위치로 사용
+            hitPosition = fireTransform.position + fireTransform.forward * fireDistance;
+        }
+
+        StartCoroutine(ShotEffect(hitPosition));
+
+        magAmmo--;
+        if (magAmmo <= 0)
+        {
+            state = State.Empty;
+        } 
     }
 }
