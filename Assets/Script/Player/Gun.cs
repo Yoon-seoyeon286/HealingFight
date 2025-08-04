@@ -102,6 +102,42 @@ public class Gun : MonoBehaviour
         if (magAmmo <= 0)
         {
             state = State.Empty;
-        } 
+        }
+    }
+
+    public bool Reload()
+    {
+        if (state == State.Reloading || ammoRemain <= 0 || magAmmo >= gunData.magCapacity)
+        {
+            return false;
+        }
+
+        StartCoroutine(ReloadRoutine());
+        {
+            return true;
+        }
+   
+ 
+    }
+
+    IEnumerator ReloadRoutine()
+    {
+        state= State.Reloading;
+        gunAudioSource.PlayOneShot(gunData.reloadClip);
+
+        yield return new WaitForSeconds(gunData.reloadTime);
+
+        int ammoToFill = gunData.magCapacity - magAmmo;
+
+        if (ammoRemain < ammoToFill)
+        {
+            ammoToFill = ammoRemain;
+        }
+
+        magAmmo += ammoToFill;
+        ammoRemain -= ammoToFill;
+
+        state = State.Ready;
+
     }
 }
