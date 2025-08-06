@@ -137,6 +137,7 @@ public class Gun : MonoBehaviour
         magAmmo += ammoToFill;
         ammoRemain -= ammoToFill;
 
+
         state = State.Ready;
 
     }
