@@ -83,7 +83,7 @@ public class Gun : MonoBehaviour
 
             if (target != null)
             {
-                target.onDamage(gunData.damage, hit.point, hit.normal);
+                target.OnDamage(gunData.damage, hit.point, hit.normal);
             }
 
             //레이 충돌 위치 저장
